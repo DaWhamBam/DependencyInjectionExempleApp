@@ -1,4 +1,4 @@
-package com.example.dependencyinjectionexempleapp;
+package com.example.dependencyinjectionexempleapp.detailsQuestion;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -7,8 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.Window;
 import android.widget.TextView;
+
+import com.example.dependencyinjectionexempleapp.Constants;
+import com.example.dependencyinjectionexempleapp.R;
+import com.example.dependencyinjectionexempleapp.ServerErrorDialogFragment;
+import com.example.dependencyinjectionexempleapp.SingleQuestionResponseSchema;
+import com.example.dependencyinjectionexempleapp.StackoverflowAPI;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,7 +21,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class QuestionsDetailActivity extends AppCompatActivity implements Callback<SingleQuestionResponseSchema> {
+public class QuestionsDetailActivity extends AppCompatActivity implements Callback<SingleQuestionResponseSchema>, QuestionDetailsViewMVC.Listener{
 
     public  static void start(Context context, String questionId) {
         Intent i = new Intent(context, QuestionsDetailActivity.class);
