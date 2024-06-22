@@ -7,13 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import com.example.dependencyinjectionexempleapp.Constants;
 import com.example.dependencyinjectionexempleapp.R;
 import com.example.dependencyinjectionexempleapp.ServerErrorDialogFragment;
-import com.example.dependencyinjectionexempleapp.SingleQuestionResponseSchema;
-import com.example.dependencyinjectionexempleapp.StackoverflowAPI;
+import com.example.dependencyinjectionexempleapp.networking.SingleQuestionResponseSchema;
+import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
+import com.example.dependencyinjectionexempleapp.questions.FetchQuestionDetailsUseCase;
+import com.example.dependencyinjectionexempleapp.questions.QuestionWithBody;
+import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVC;
+import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVCImpl;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,7 +26,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class QuestionsDetailActivity extends AppCompatActivity implements Callback<SingleQuestionResponseSchema>, QuestionDetailsViewMVC.Listener{
+public class QuestionsDetailActivity extends AppCompatActivity implements QuestionDetailsViewMVC.Listener, FetchQuestionDetailsUseCase.Listener {
 
     public  static void start(Context context, String questionId) {
         Intent i = new Intent(context, QuestionsDetailActivity.class);
@@ -31,25 +36,21 @@ public class QuestionsDetailActivity extends AppCompatActivity implements Callba
 
     public static final String EXTRA_QUESTION_ID = "EXTRA_QUESTION_ID";
     private TextView mTXTQuestionBody;
-    private StackoverflowAPI stackoverflowAPI;
     private String mQuestionId;
-    private Call<SingleQuestionResponseSchema> mCall;
+    private QuestionDetailsViewMVC mViewMVC;
+    private  FetchQuestionDetailsUseCase fetchQuestionDetailsUseCase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_questions_detail);
-
-        mTXTQuestionBody = findViewById(R.id.txt_question_body);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        mViewMVC = new QuestionDetailsViewMVCImpl(LayoutInflater.from(this), null);
+        setContentView(mViewMVC.getRootView());
 
 
-        stackoverflowAPI = retrofit.create(StackoverflowAPI.class);
         mQuestionId = getIntent().getExtras().getString(EXTRA_QUESTION_ID);
+
+        // Networking
+        fetchQuestionDetailsUseCase = new FetchQuestionDetailsUseCase();
 
 
     }
@@ -57,41 +58,31 @@ public class QuestionsDetailActivity extends AppCompatActivity implements Callba
     @Override
     protected void onStart() {
         super.onStart();
-        mCall = stackoverflowAPI.questionDetail(mQuestionId);
-        mCall.enqueue(this);
+        mViewMVC.registerListener(this);
+        fetchQuestionDetailsUseCase.registerListener(this);
+        fetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(mQuestionId);
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mCall != null) {
-            mCall.cancel();
-        }
-    }
+        mViewMVC.unregisterListener(this);
+        fetchQuestionDetailsUseCase.unregisterListener(this);
 
-
-    @Override
-    public void onResponse(Call<SingleQuestionResponseSchema> call, Response<SingleQuestionResponseSchema> response) {
-        SingleQuestionResponseSchema questionResponseSchema;
-        if (response.isSuccessful() && (questionResponseSchema = response.body()) != null) {
-            String questionBody = questionResponseSchema.getQuestions().getmBody();
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                mTXTQuestionBody.setText(Html.fromHtml(questionBody, Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                mTXTQuestionBody.setText(Html.fromHtml(questionBody));
-            }
-        } else {
-            onFailure(call, null);
-        }
     }
 
     @Override
-    public void onFailure(Call<SingleQuestionResponseSchema> call, Throwable throwable) {
+    public void onFetchOfQuestionDetailsSucceeded(QuestionWithBody question) {
+        mViewMVC.bindQuestion(question);
+    }
+
+    @Override
+    public void onFetchOfQuestionDetailsFailed() {
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(ServerErrorDialogFragment.newInstance(), null)
                 .commitAllowingStateLoss();
-
     }
 }

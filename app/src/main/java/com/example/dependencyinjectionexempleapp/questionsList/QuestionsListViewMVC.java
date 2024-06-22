@@ -1,6 +1,6 @@
 package com.example.dependencyinjectionexempleapp.questionsList;
 
-import com.example.dependencyinjectionexempleapp.Question;
+import com.example.dependencyinjectionexempleapp.questions.Question;
 
 import java.util.List;
 

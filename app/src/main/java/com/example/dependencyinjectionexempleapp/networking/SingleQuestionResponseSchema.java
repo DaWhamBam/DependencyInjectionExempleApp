@@ -1,8 +1,8 @@
-package com.example.dependencyinjectionexempleapp;
+package com.example.dependencyinjectionexempleapp.networking;
 
+import com.example.dependencyinjectionexempleapp.questions.QuestionWithBody;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

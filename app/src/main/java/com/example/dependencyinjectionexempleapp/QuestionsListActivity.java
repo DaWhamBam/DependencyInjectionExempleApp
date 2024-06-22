@@ -8,8 +8,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import com.example.dependencyinjectionexempleapp.detailsQuestion.QuestionsDetailActivity;
+import com.example.dependencyinjectionexempleapp.networking.QuestionsListResponseSchema;
+import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
+import com.example.dependencyinjectionexempleapp.questions.FetchQuestionsListUseCase;
+import com.example.dependencyinjectionexempleapp.questions.Question;
 import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVC;
 import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVCImpl;
+
+import java.util.List;
 
 import retrofit2.Response;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,12 +25,13 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 
 
-public class QuestionsListActivity extends AppCompatActivity implements Callback<QuestionsListResponseSchema>, QuestionsListViewMVC.Listener {
+public class QuestionsListActivity extends AppCompatActivity implements QuestionsListViewMVC.Listener, FetchQuestionsListUseCase.Listener {
 
 
 
-    private StackoverflowAPI mStackoverflowAPI;
-    private Call<QuestionsListResponseSchema> mCall;
+    private static final int NUM_OF_QUESTIONS_TO_FETCH = 20;
+    private FetchQuestionsListUseCase fetchQuestionsListUseCase;
+
     private QuestionsListViewMVC mViewMVC;
 
 
@@ -36,15 +43,8 @@ public class QuestionsListActivity extends AppCompatActivity implements Callback
 
         setContentView(mViewMVC.getRootView());
 
-
-        // Retrofit
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        mStackoverflowAPI = retrofit.create(StackoverflowAPI.class);
+        // Networking
+        fetchQuestionsListUseCase = new FetchQuestionsListUseCase();
 
     }
 
@@ -52,38 +52,30 @@ public class QuestionsListActivity extends AppCompatActivity implements Callback
     protected void onStart() {
         super.onStart();
         mViewMVC.registerListener(this);
-        mCall = mStackoverflowAPI.lastActiveQuestions(20);
-        mCall.enqueue(this);
+        fetchQuestionsListUseCase.registerListener(this);
+        fetchQuestionsListUseCase.fetchLastActiveQuestionsAndNotify(NUM_OF_QUESTIONS_TO_FETCH);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mViewMVC.unregisterListener(this);
-        if(mCall !=null) {
-            mCall.cancel();
-        }
+        fetchQuestionsListUseCase.unregisterListener(this);
     }
 
     @Override
-    public void onResponse(Call<QuestionsListResponseSchema> call, Response<QuestionsListResponseSchema> response) {
-        QuestionsListResponseSchema responseSchema;
-        if(response.isSuccessful() && (responseSchema = response.body()) != null) {
-            mViewMVC.bindQuestins(responseSchema.getQuestions());
-        } else {
-            onFailure(call, null);
-        }
+    public void onFetchOfQuestionSucceeded(List<Question> questions) {
+        mViewMVC.bindQuestins(questions);
+
     }
 
     @Override
-    public void onFailure(Call<QuestionsListResponseSchema> call, Throwable throwable) {
-        QuestionsListResponseSchema responseSchema;
+    public void onFetchOfQuestionFailed() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(ServerErrorDialogFragment.newInstance(), null)
                 .commitAllowingStateLoss();
     }
-
 
     @Override
     public void onQuestionClicked(Question question) {

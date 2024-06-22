@@ -1,4 +1,7 @@
-package com.example.dependencyinjectionexempleapp;
+package com.example.dependencyinjectionexempleapp.networking;
+
+import com.example.dependencyinjectionexempleapp.networking.QuestionsListResponseSchema;
+import com.example.dependencyinjectionexempleapp.networking.SingleQuestionResponseSchema;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
