@@ -2,7 +2,7 @@ package com.example.dependencyinjectionexempleapp.questions;
 
 import androidx.annotation.Nullable;
 
-import com.example.dependencyinjectionexempleapp.Constants;
+import com.example.dependencyinjectionexempleapp.common.Constants;
 import com.example.dependencyinjectionexempleapp.networking.SingleQuestionResponseSchema;
 import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
 import com.example.dependencyinjectionexempleapp.questionsList.BaseObservable;

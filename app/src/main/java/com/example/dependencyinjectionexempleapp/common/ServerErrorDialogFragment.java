@@ -1,4 +1,4 @@
-package com.example.dependencyinjectionexempleapp;
+package com.example.dependencyinjectionexempleapp.common;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.example.dependencyinjectionexempleapp.R;
 
 public class ServerErrorDialogFragment extends DialogFragment {
     public static ServerErrorDialogFragment newInstance() {

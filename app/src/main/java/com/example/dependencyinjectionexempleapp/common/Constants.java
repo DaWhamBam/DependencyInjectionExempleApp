@@ -1,4 +1,4 @@
-package com.example.dependencyinjectionexempleapp;
+package com.example.dependencyinjectionexempleapp.common;
 
 public class Constants {
 

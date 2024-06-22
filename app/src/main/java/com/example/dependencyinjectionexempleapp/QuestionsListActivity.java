@@ -2,27 +2,21 @@ package com.example.dependencyinjectionexempleapp;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
+import com.example.dependencyinjectionexempleapp.common.DialogManager;
+import com.example.dependencyinjectionexempleapp.common.ServerErrorDialogFragment;
 import com.example.dependencyinjectionexempleapp.detailsQuestion.QuestionsDetailActivity;
-import com.example.dependencyinjectionexempleapp.networking.QuestionsListResponseSchema;
-import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
 import com.example.dependencyinjectionexempleapp.questions.FetchQuestionsListUseCase;
 import com.example.dependencyinjectionexempleapp.questions.Question;
 import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVC;
 import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVCImpl;
 
 import java.util.List;
-
-import retrofit2.Response;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
 
 
 public class QuestionsListActivity extends AppCompatActivity implements QuestionsListViewMVC.Listener, FetchQuestionsListUseCase.Listener {
@@ -31,8 +25,8 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
 
     private static final int NUM_OF_QUESTIONS_TO_FETCH = 20;
     private FetchQuestionsListUseCase fetchQuestionsListUseCase;
-
     private QuestionsListViewMVC mViewMVC;
+    private DialogManager mDialogManager;
 
 
     @Override
@@ -45,6 +39,9 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
 
         // Networking
         fetchQuestionsListUseCase = new FetchQuestionsListUseCase();
+
+        // Dialog Manager
+        mDialogManager = new DialogManager(getSupportFragmentManager());
 
     }
 
@@ -71,10 +68,9 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
 
     @Override
     public void onFetchOfQuestionFailed() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(ServerErrorDialogFragment.newInstance(), null)
-                .commitAllowingStateLoss();
+
+        mDialogManager.showRetainedDialogWithId(ServerErrorDialogFragment.newInstance(), "");
+
     }
 
     @Override
