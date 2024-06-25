@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import com.example.dependencyinjectionexempleapp.common.DialogManager;
 import com.example.dependencyinjectionexempleapp.common.ServerErrorDialogFragment;
 import com.example.dependencyinjectionexempleapp.detailsQuestion.QuestionsDetailActivity;
+import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
 import com.example.dependencyinjectionexempleapp.questions.FetchQuestionsListUseCase;
 import com.example.dependencyinjectionexempleapp.questions.Question;
 import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVC;
@@ -38,8 +39,8 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
         setContentView(mViewMVC.getRootView());
 
         // Networking
-        Retrofit retrofit = ((MyApplication) getApplication()).getRetrofit();
-        fetchQuestionsListUseCase = new FetchQuestionsListUseCase(retrofit);
+        StackoverflowAPI stackoverflowAPI = ((MyApplication) getApplication()).getStackoverflowAPI();
+        fetchQuestionsListUseCase = new FetchQuestionsListUseCase(stackoverflowAPI);
 
         // Dialog Manager
         mDialogManager = new DialogManager(getSupportFragmentManager());

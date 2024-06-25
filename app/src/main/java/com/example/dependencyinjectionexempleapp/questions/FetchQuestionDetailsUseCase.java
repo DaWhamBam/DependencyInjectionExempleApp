@@ -20,21 +20,21 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
         void onFetchOfQuestionDetailsFailed();
         }
 
-        private final StackoverflowAPI stackoverflowAPI;
+        private final StackoverflowAPI mStackoverflowAPI;
 
     @Nullable
     Call<SingleQuestionResponseSchema> call;
 
-    public FetchQuestionDetailsUseCase(Retrofit retrofit) {
+    public FetchQuestionDetailsUseCase(StackoverflowAPI stackoverflowAPI) {
 
-        stackoverflowAPI = retrofit.create(StackoverflowAPI.class);
+        mStackoverflowAPI = stackoverflowAPI;
 
     }
 
     public  void fetchQuestionDetailsAndNotify(String questionId) {
         cancelCurrentFetchIfActive();
 
-        call = stackoverflowAPI.questionDetail(questionId);
+        call = mStackoverflowAPI.questionDetail(questionId);
         call.enqueue(new Callback<SingleQuestionResponseSchema>() {
             @Override
             public void onResponse(Call<SingleQuestionResponseSchema> call, Response<SingleQuestionResponseSchema> response) {

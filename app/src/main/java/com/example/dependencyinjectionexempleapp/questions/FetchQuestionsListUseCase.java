@@ -24,20 +24,20 @@ public class FetchQuestionsListUseCase extends BaseObservable<FetchQuestionsList
         void onFetchOfQuestionFailed();
     }
 
-    private final StackoverflowAPI stackoverflowAPI;
+    private final StackoverflowAPI mStackoverflowAPI;
 
     @Nullable
     Call<QuestionsListResponseSchema> call;
 
-    public FetchQuestionsListUseCase(Retrofit retrofit) {
+    public FetchQuestionsListUseCase(StackoverflowAPI stackoverflowAPI) {
 
-        stackoverflowAPI = retrofit.create(StackoverflowAPI.class);
+        mStackoverflowAPI = stackoverflowAPI;
     }
 
     public  void fetchLastActiveQuestionsAndNotify(int numOfQuestions) {
         cancelCurrentFetchIfActive();
 
-        call = stackoverflowAPI.lastActiveQuestions(numOfQuestions);
+        call = mStackoverflowAPI.lastActiveQuestions(numOfQuestions);
         call.enqueue(new Callback<QuestionsListResponseSchema>() {
             @Override
             public void onResponse(Call<QuestionsListResponseSchema> call, Response<QuestionsListResponseSchema> response) {

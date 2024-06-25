@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.dependencyinjectionexempleapp.MyApplication;
 import com.example.dependencyinjectionexempleapp.common.DialogManager;
 import com.example.dependencyinjectionexempleapp.common.ServerErrorDialogFragment;
+import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
 import com.example.dependencyinjectionexempleapp.questions.FetchQuestionDetailsUseCase;
 import com.example.dependencyinjectionexempleapp.questions.QuestionWithBody;
 
@@ -41,8 +42,8 @@ public class QuestionsDetailActivity extends AppCompatActivity implements Questi
         mQuestionId = getIntent().getExtras().getString(EXTRA_QUESTION_ID);
 
         // Networking
-        Retrofit retrofit = ((MyApplication) getApplication()).getRetrofit();
-        fetchQuestionDetailsUseCase = new FetchQuestionDetailsUseCase(retrofit);
+        StackoverflowAPI stackoverflowAPI = ((MyApplication) getApplication()).getStackoverflowAPI();
+        fetchQuestionDetailsUseCase = new FetchQuestionDetailsUseCase(stackoverflowAPI);
 
         // Dialog Manager
         mDialogManager = new DialogManager(getSupportFragmentManager());
