@@ -2,8 +2,6 @@ package com.example.dependencyinjectionexempleapp;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +15,8 @@ import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListView
 import com.example.dependencyinjectionexempleapp.questionsList.QuestionsListViewMVCImpl;
 
 import java.util.List;
+
+import retrofit2.Retrofit;
 
 
 public class QuestionsListActivity extends AppCompatActivity implements QuestionsListViewMVC.Listener, FetchQuestionsListUseCase.Listener {
@@ -38,7 +38,8 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
         setContentView(mViewMVC.getRootView());
 
         // Networking
-        fetchQuestionsListUseCase = new FetchQuestionsListUseCase();
+        Retrofit retrofit = ((MyApplication) getApplication()).getRetrofit();
+        fetchQuestionsListUseCase = new FetchQuestionsListUseCase(retrofit);
 
         // Dialog Manager
         mDialogManager = new DialogManager(getSupportFragmentManager());
