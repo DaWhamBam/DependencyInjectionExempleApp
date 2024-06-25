@@ -42,7 +42,7 @@ public class QuestionsDetailActivity extends AppCompatActivity implements Questi
         mQuestionId = getIntent().getExtras().getString(EXTRA_QUESTION_ID);
 
         // Networking
-        fetchQuestionDetailsUseCase = ((MyApplication) getApplication()).getFetchQuestionDetailsUseCase();
+        fetchQuestionDetailsUseCase = ((MyApplication) getApplication()).getCompositionRoot().getFetchQuestionDetailsUseCase();
 
         // Dialog Manager
         mDialogManager = new DialogManager(getSupportFragmentManager());

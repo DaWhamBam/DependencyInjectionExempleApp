@@ -39,7 +39,7 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
         setContentView(mViewMVC.getRootView());
 
         // Networking
-        fetchQuestionsListUseCase = ((MyApplication) getApplication()).getFetchQuestionsListUseCase();
+        fetchQuestionsListUseCase = ((MyApplication) getApplication()).getCompositionRoot().getFetchQuestionsListUseCase();
 
         // Dialog Manager
         mDialogManager = new DialogManager(getSupportFragmentManager());
