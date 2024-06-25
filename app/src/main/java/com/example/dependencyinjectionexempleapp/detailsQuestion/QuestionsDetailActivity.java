@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import com.example.dependencyinjectionexempleapp.MyApplication;
+import com.example.dependencyinjectionexempleapp.common.BaseActivity;
 import com.example.dependencyinjectionexempleapp.common.DialogManager;
 import com.example.dependencyinjectionexempleapp.common.ServerErrorDialogFragment;
 import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
@@ -17,7 +18,7 @@ import com.example.dependencyinjectionexempleapp.questions.QuestionWithBody;
 
 import retrofit2.Retrofit;
 
-public class QuestionsDetailActivity extends AppCompatActivity implements QuestionDetailsViewMVC.Listener, FetchQuestionDetailsUseCase.Listener {
+public class QuestionsDetailActivity extends BaseActivity implements QuestionDetailsViewMVC.Listener, FetchQuestionDetailsUseCase.Listener {
 
     public  static void start(Context context, String questionId) {
         Intent i = new Intent(context, QuestionsDetailActivity.class);
@@ -42,11 +43,10 @@ public class QuestionsDetailActivity extends AppCompatActivity implements Questi
         mQuestionId = getIntent().getExtras().getString(EXTRA_QUESTION_ID);
 
         // Networking
-        fetchQuestionDetailsUseCase = ((MyApplication) getApplication()).getCompositionRoot().getFetchQuestionDetailsUseCase();
+        fetchQuestionDetailsUseCase = getCompositionRoot().getFetchQuestionDetailsUseCase();
 
         // Dialog Manager
-        mDialogManager = new DialogManager(getSupportFragmentManager());
-
+        mDialogManager = getCompositionRoot().getDialogManagerFactory().newDialogManager(getSupportFragmentManager());
 
     }
 

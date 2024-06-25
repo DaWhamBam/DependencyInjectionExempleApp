@@ -1,8 +1,11 @@
 package com.example.dependencyinjectionexempleapp.dependencyInjection;
 
 import androidx.annotation.UiThread;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.dependencyinjectionexempleapp.common.Constants;
+import com.example.dependencyinjectionexempleapp.common.DialogManager;
+import com.example.dependencyinjectionexempleapp.common.DialogManagerFactory;
 import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
 import com.example.dependencyinjectionexempleapp.questions.FetchQuestionDetailsUseCase;
 import com.example.dependencyinjectionexempleapp.questions.FetchQuestionsListUseCase;
@@ -44,5 +47,9 @@ public class CompositionRoot {
     @UiThread
     public FetchQuestionsListUseCase getFetchQuestionsListUseCase() {
         return new FetchQuestionsListUseCase(getStackoverflowAPI());
+    }
+
+    public DialogManagerFactory getDialogManagerFactory() {
+        return new DialogManagerFactory();
     }
 }

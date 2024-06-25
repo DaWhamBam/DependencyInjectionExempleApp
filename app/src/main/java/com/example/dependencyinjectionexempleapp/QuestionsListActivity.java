@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
+import com.example.dependencyinjectionexempleapp.common.BaseActivity;
 import com.example.dependencyinjectionexempleapp.common.DialogManager;
 import com.example.dependencyinjectionexempleapp.common.ServerErrorDialogFragment;
 import com.example.dependencyinjectionexempleapp.detailsQuestion.QuestionsDetailActivity;
@@ -20,9 +21,7 @@ import java.util.List;
 import retrofit2.Retrofit;
 
 
-public class QuestionsListActivity extends AppCompatActivity implements QuestionsListViewMVC.Listener, FetchQuestionsListUseCase.Listener {
-
-
+public class QuestionsListActivity extends BaseActivity implements QuestionsListViewMVC.Listener, FetchQuestionsListUseCase.Listener {
 
     private static final int NUM_OF_QUESTIONS_TO_FETCH = 20;
     private FetchQuestionsListUseCase fetchQuestionsListUseCase;
@@ -39,10 +38,10 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
         setContentView(mViewMVC.getRootView());
 
         // Networking
-        fetchQuestionsListUseCase = ((MyApplication) getApplication()).getCompositionRoot().getFetchQuestionsListUseCase();
+        fetchQuestionsListUseCase = getCompositionRoot().getFetchQuestionsListUseCase();
 
         // Dialog Manager
-        mDialogManager = new DialogManager(getSupportFragmentManager());
+        mDialogManager = getCompositionRoot().getDialogManagerFactory().newDialogManager(getSupportFragmentManager());
 
     }
 
