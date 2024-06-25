@@ -42,8 +42,7 @@ public class QuestionsDetailActivity extends AppCompatActivity implements Questi
         mQuestionId = getIntent().getExtras().getString(EXTRA_QUESTION_ID);
 
         // Networking
-        StackoverflowAPI stackoverflowAPI = ((MyApplication) getApplication()).getStackoverflowAPI();
-        fetchQuestionDetailsUseCase = new FetchQuestionDetailsUseCase(stackoverflowAPI);
+        fetchQuestionDetailsUseCase = ((MyApplication) getApplication()).getFetchQuestionDetailsUseCase();
 
         // Dialog Manager
         mDialogManager = new DialogManager(getSupportFragmentManager());

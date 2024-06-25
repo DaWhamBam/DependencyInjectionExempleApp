@@ -6,6 +6,8 @@ import androidx.annotation.UiThread;
 
 import com.example.dependencyinjectionexempleapp.common.Constants;
 import com.example.dependencyinjectionexempleapp.networking.StackoverflowAPI;
+import com.example.dependencyinjectionexempleapp.questions.FetchQuestionDetailsUseCase;
+import com.example.dependencyinjectionexempleapp.questions.FetchQuestionsListUseCase;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -33,7 +35,16 @@ public class MyApplication extends Application {
             stackoverflowAPI = getRetrofit().create(StackoverflowAPI.class);
         }
         return stackoverflowAPI;
+    }
 
+    @UiThread
+    public FetchQuestionDetailsUseCase getFetchQuestionDetailsUseCase() {
+        return new FetchQuestionDetailsUseCase(getStackoverflowAPI());
+    }
+
+    @UiThread
+    public FetchQuestionsListUseCase getFetchQuestionsListUseCase() {
+        return new FetchQuestionsListUseCase(getStackoverflowAPI());
     }
 
 

@@ -39,8 +39,7 @@ public class QuestionsListActivity extends AppCompatActivity implements Question
         setContentView(mViewMVC.getRootView());
 
         // Networking
-        StackoverflowAPI stackoverflowAPI = ((MyApplication) getApplication()).getStackoverflowAPI();
-        fetchQuestionsListUseCase = new FetchQuestionsListUseCase(stackoverflowAPI);
+        fetchQuestionsListUseCase = ((MyApplication) getApplication()).getFetchQuestionsListUseCase();
 
         // Dialog Manager
         mDialogManager = new DialogManager(getSupportFragmentManager());
